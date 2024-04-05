@@ -16,3 +16,5 @@ class User(db.Entity):
     rolID= Required(Rols)
     createdAt = Required(datetime.datetime,default=datetime.datetime.now)
     
+    
+    

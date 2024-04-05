@@ -19,3 +19,10 @@ class user_out(BaseModel):
     rolID: int
     email: EmailStr
     avatar: str
+
+class sign_up_out(BaseModel):
+    access_token: str
+    token_type: str
+    
+    class Config:
+        orm_mode = True

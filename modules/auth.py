@@ -9,7 +9,7 @@ from models import User
 
 load_dotenv()
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl=os.getenv('JWT_SECRET'))
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/users/sign_in")
 jwt_secret = os.getenv('JWT_SECRET')
 
 def hash_password(password: str) -> str:
@@ -29,12 +29,11 @@ def decode_token(token: str) -> Union[str, dict]:
             headers={"WWW-Authenticate": "Bearer"},
         )
 
-def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
+def get_current_user_id(token: Annotated[str, Depends(oauth2_scheme)]):
     try:
         payload = decode_token(token)
-        user = User.get(id=payload['user_id'])
-        return payload['user_id']
-    
+        return payload.get('user_id')
+
     except jwt.JWTError:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
