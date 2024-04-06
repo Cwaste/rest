@@ -1,8 +1,10 @@
+import os
 from pony.orm import *
 import time,datetime
 from .base import db
 from .rols import Rols
 from .careers import Careers
+from .registers import Register
 
 class User(db.Entity):
     ID = PrimaryKey(int, auto=True)
@@ -16,5 +18,4 @@ class User(db.Entity):
     rolID= Required(Rols)
     createdAt = Required(datetime.datetime,default=datetime.datetime.now)
     
-    
-    
+    registers = Set(Register)

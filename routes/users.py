@@ -40,7 +40,9 @@ def login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()]):
     
 @router.post("/sign_up",status_code=status.HTTP_201_CREATED)
 @db_session
-def sign_up(user:users_schema.user_in) :
+def sign_up(user: users_schema.user_in) :
+
+    print(user.model_dump_json)
     check_user = User.get(email=user.email)
     
     if check_user:
@@ -49,7 +51,7 @@ def sign_up(user:users_schema.user_in) :
             detail="Email already registered",
         )
     
-    user =  User(
+    user = User(
         firstName=user.firstName,
         middleName=user.middleName,
         lastName=user.lastName,
@@ -89,7 +91,7 @@ def delete_user(id:int,current_user: Annotated[str, Depends(auth_module.get_curr
 
 @router.put("/edit/{id}",status_code=status.HTTP_200_OK)
 @db_session
-def edit_user(id:int,user:users_schema.user_in, current_user: Annotated[str, Depends(auth_module.get_current_user_id)]):
+def edit_user(id: int, user: users_schema.user_in, current_user: Annotated[str, Depends(auth_module.get_current_user_id)]):
     user_check = User.get(ID=id)
 
     if not user_check:
