@@ -42,7 +42,6 @@ def login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()]):
 @db_session
 def sign_up(user: users_schema.user_in) :
 
-    print(user.model_dump_json)
     check_user = User.get(email=user.email)
     
     if check_user:
@@ -61,7 +60,8 @@ def sign_up(user: users_schema.user_in) :
         password=auth_module.hash_password(user.password),
         avatar=user.avatar
     )
-    user.flush() 
+    
+    user.flush()
     user_id = int(user.ID)
     
     return   {

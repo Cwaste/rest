@@ -3,5 +3,6 @@ from .users import User
 from .careers import Careers
 from .rols import Rols
 from .registers import Register
+from .students import Student
 
 

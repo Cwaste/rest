@@ -4,7 +4,8 @@ import os
 from dotenv import load_dotenv
 from routes import (
     users_router,
-    registers_router
+    registers_router,
+    students_router
 )
 
 ##cors alow any origin
@@ -23,6 +24,7 @@ db.generate_mapping(create_tables=True)
 app = FastAPI()
 app.include_router(users_router)
 app.include_router(registers_router)
+app.include_router(students_router)
 
 app.add_middleware(
     CORSMiddleware,
