@@ -5,7 +5,7 @@ import jwt
 from typing import Annotated, Union
 from fastapi import HTTPException, status, Depends
 from fastapi.security import OAuth2PasswordBearer
-from models import User
+from models import Users
 
 load_dotenv()
 

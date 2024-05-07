@@ -3,19 +3,21 @@ from pony.orm import *
 import time,datetime
 from .base import db
 from .rols import Rols
-from .careers import Careers
-from .registers import Register
+from .countries import Countries
 
-class User(db.Entity):
+class Users(db.Entity):
     ID = PrimaryKey(int, auto=True)
-    firstName = Required(str)
-    middleName = Required(str)
-    lastName = Required(str)
+    first_Name = Required(str)
+    middle_Name = Required(str)
+    last_name = Required(str)
+    country_ID =Required(Countries)
     email = Required(str)
+    phone = Required(str)
     password = Required(str)
     avatar = Required(str)
-    careerID = Required(Careers)
-    rolID= Required(Rols)
-    createdAt = Required(datetime.datetime,default=datetime.datetime.now)
+    points = Required(int,default=0)
+    rol_ID= Required(Rols,default=2)
+    created_at = Required(datetime.date)
     
-    registers = Set(Register)
+    achievement_ID = Set('User_achievement')
+  

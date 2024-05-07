@@ -1,28 +1,28 @@
 from pydantic import BaseModel, EmailStr
  
 class user_in(BaseModel):
-    firstName: str
-    middleName: str
-    lastName: str
-    careerID: int
-    rolID: int
+    first_name: str
+    middle_name: str
+    last_name: str
+    country_ID: int
     email: EmailStr
+    phone: str
     password: str
     avatar: str
     
 class user_out(BaseModel):
     id: int
-    firstName: str
-    middleName: str
-    lastName: str
-    careerID: int
-    rolID: int
+    first_name: str
+    middle_name: str
+    last_name: str
+    country: str
+    rol: str
     email: EmailStr
+    phone: str
+    password: str
     avatar: str
 
 class sign_up_out(BaseModel):
     access_token: str
     token_type: str
     
-    class Config:
-        orm_mode = True

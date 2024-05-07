@@ -2,8 +2,8 @@ from fastapi import APIRouter, HTTPException, status,Depends
 from typing import Any, List, Union
 from typing_extensions import Annotated
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-
-from models import (User)
+import datetime
+from models import (Users)
 from schemas import (
     users as users_schema
 )
@@ -20,11 +20,11 @@ router = APIRouter(
 @router.post("/sign_in",status_code=status.HTTP_200_OK)
 @db_session
 def login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()]):
-    check_user = User.get(email=form_data.username)
+    check_user = Users.get(email=form_data.username)
     if not check_user:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="User not found",
+            detail="Users not found",
         )
     if not auth_module.hash_password(form_data.password) == check_user.password:
         raise HTTPException(
@@ -41,8 +41,7 @@ def login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()]):
 @router.post("/sign_up",status_code=status.HTTP_201_CREATED)
 @db_session
 def sign_up(user: users_schema.user_in) :
-
-    check_user = User.get(email=user.email)
+    check_user = Users.get(email=user.email)
     
     if check_user:
         raise HTTPException(
@@ -50,15 +49,17 @@ def sign_up(user: users_schema.user_in) :
             detail="Email already registered",
         )
     
-    user = User(
-        firstName=user.firstName,
-        middleName=user.middleName,
-        lastName=user.lastName,
-        careerID=user.careerID,
-        rolID=user.rolID,
-        email=user.email,
-        password=auth_module.hash_password(user.password),
-        avatar=user.avatar
+    user = Users(
+        first_Name = user.first_name,
+        middle_Name = user.middle_name,
+        last_name = user.last_name,
+        country_ID = user.country_ID,
+        email = user.email,
+        phone = user.phone,
+        password = auth_module.hash_password(user.password),
+        avatar = user.avatar,
+        rol_ID=2,
+        created_at=datetime.datetime.today()
     )
     
     user.flush()
@@ -69,22 +70,23 @@ def sign_up(user: users_schema.user_in) :
         "token_type": "bearer"
     }
 
-@router.get("/me",status_code=status.HTTP_200_OK)
+@router.get("/profile",status_code=status.HTTP_200_OK)
 @db_session
 def me(current_user: Annotated[str, Depends(auth_module.get_current_user_id)]):
-    return current_user
+    user = Users.get(ID=current_user)
+    return user
 
 @router.delete("/delete/{id}",status_code=status.HTTP_200_OK)
 @db_session
 def delete_user(id:int,current_user: Annotated[str, Depends(auth_module.get_current_user_id)]):
-    user_check = User.get(ID=id)
+    user_check = Users.get(ID=id)
     
     if not user_check:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="User not found",
         )
-    user = User[id]
+    user = Users[id]
     user.delete()
     commit()
     return {"message":"User deleted"}
@@ -92,7 +94,7 @@ def delete_user(id:int,current_user: Annotated[str, Depends(auth_module.get_curr
 @router.put("/edit/{id}",status_code=status.HTTP_200_OK)
 @db_session
 def edit_user(id: int, user: users_schema.user_in, current_user: Annotated[str, Depends(auth_module.get_current_user_id)]):
-    user_check = User.get(ID=id)
+    user_check = Users.get(ID=id)
 
     if not user_check:
         raise HTTPException(
@@ -100,7 +102,7 @@ def edit_user(id: int, user: users_schema.user_in, current_user: Annotated[str, 
             detail="User not found",
         )
         
-    user_database = User[id]
+    user_database = Users[id]
    
     user_database.set(
         firstName=user.firstName,
@@ -111,6 +113,7 @@ def edit_user(id: int, user: users_schema.user_in, current_user: Annotated[str, 
         email=user.email,
         password=auth_module.hash_password(user.password),
         avatar=user.avatar
+        
     )
     
     commit()
