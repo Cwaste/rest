@@ -3,7 +3,7 @@ from typing import Any, List, Union
 from typing_extensions import Annotated
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 import datetime
-from models import (Users)
+from models import (Users,Rols)
 from schemas import (
     users as users_schema
 )
@@ -40,7 +40,7 @@ def login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()]):
     
 @router.post("/sign_up",status_code=status.HTTP_201_CREATED)
 @db_session
-def sign_up(user: users_schema.user_in) :
+def sign_up(user: users_schema.user_in):
     check_user = Users.get(email=user.email)
     
     if check_user:
@@ -73,8 +73,22 @@ def sign_up(user: users_schema.user_in) :
 @router.get("/profile",status_code=status.HTTP_200_OK)
 @db_session
 def me(current_user: Annotated[str, Depends(auth_module.get_current_user_id)]):
+    
     user = Users.get(ID=current_user)
-    return user
+    
+    if(user is None):
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found",
+        )
+    
+    return {"firstName":user.first_Name,
+            "middleName":user.middle_Name,
+            "lastName":user.last_name,
+            "email":user.email,
+            "rol":user.rol_ID.name,
+            "points":user.points,
+            "avatar":user.avatar}
 
 @router.delete("/delete/{id}",status_code=status.HTTP_200_OK)
 @db_session

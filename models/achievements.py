@@ -7,7 +7,7 @@ from .base import db
 
 class Achievements(db.Entity):
     ID = PrimaryKey(int, auto=True)
-    image = Required(str)
+    image = Required(LongStr)
     points = Required(int)
     created_at = Required(datetime.date)
     

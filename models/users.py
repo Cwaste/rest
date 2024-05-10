@@ -14,7 +14,7 @@ class Users(db.Entity):
     email = Required(str)
     phone = Required(str)
     password = Required(str)
-    avatar = Required(str)
+    avatar = Required(LongStr)
     points = Required(int,default=0)
     rol_ID= Required(Rols,default=2)
     created_at = Required(datetime.date)

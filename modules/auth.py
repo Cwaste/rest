@@ -34,7 +34,7 @@ def get_current_user_id(token: Annotated[str, Depends(oauth2_scheme)]):
         payload = decode_token(token)
         return payload.get('user_id')
 
-    except jwt.JWTError:
+    except jwt.PyJWTError:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Could not validate credentials",

@@ -4,7 +4,9 @@ import os
 from pony.orm import *
 from dotenv import load_dotenv
 from routes import (
-    users_router
+    users_router,
+    countries_router,
+    achievements_router
 )
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -26,6 +28,8 @@ app.add_middleware(
 )
 
 app.include_router(users_router)
+app.include_router(countries_router)
+app.include_router(achievements_router)
 
 
 
