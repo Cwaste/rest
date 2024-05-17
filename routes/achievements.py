@@ -81,7 +81,34 @@ def delete_achievement(current_user: Annotated[str, Depends(auth_module.get_curr
     return {
         "message": "Achievement deleted"
     }
+@router.get("/achievements_by_user/{id}",status_code=status.HTTP_200_OK)
+@db_session
+def get_achievements_by_user(id:int):
+    user = Users.get(ID=id)
     
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found",
+        )
+    
+    user_achievement = User_achievement.select(lambda ua: ua.user_ID == user)
+    
+    achievements_data = []
+    
+    for ua in user_achievement:
+        achievements_data.append({
+            "image": ua.achievement_ID.image,
+            "points": ua.achievement_ID.points,
+            "created_at": ua.achievement_ID.created_at,
+            "ID": ua.achievement_ID.ID,
+        })
+        
+    return {
+        "achievements": achievements_data,
+        "user": user.to_dict()
+    }
+
 @router.get("",status_code=status.HTTP_200_OK)
 @db_session
 def get_achievements(current_user: Annotated[str, Depends(auth_module.get_current_user_id)]):
